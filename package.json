@@ -13,7 +13,7 @@
     "react": "0.14.x",
     "react-dom": "0.14.x",
     "react-redux": "^4.4.5",
-    "react-router-redux": "^4.0.4",
+    "react-router": "^2.4.0",
     "redux": "^3.5.2"
   },
   "devDependencies": {

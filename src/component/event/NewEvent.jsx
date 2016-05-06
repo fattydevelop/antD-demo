@@ -198,7 +198,7 @@ const NewEvent = React.createClass({
           </FormItem>
         </Col>
       </Row>
-      <FormItem wrapperCol={{ span: 4, offset: 10 }} style={{ marginTop: 24 }}>
+      <FormItem className="buttonGroup" wrapperCol={{ span: 4, offset: 10 }} style={{ marginTop: 24 ,display:this.props.detail?"none":"block"}}>
           <Button type="primary" htmlType="submit">保存</Button>
           <Button type="ghost" htmlType="submit">取消</Button>
       </FormItem>

@@ -9,29 +9,34 @@ const Sider = React.createClass({
       theme:'dark'
     };
   },
+  componentWillMount(){
+    console.log(3333,this.props.menuKey)
+  },
   changeTheme(value){
     console.log(value)
     this.setState({
       theme:value?'light':'dark'
     })
   },
-  handleClick(e){
+  selectMenu(e){
     console.log('click',e);
     this.setState({
       current:e.key
-    });
+    })
+   this.props.selectMenu(e.key);
   },
   render(){
     return(
       <div>
         <Menu theme={this.state.theme}
-          onClick={this.handleClick}
+          onClick={this.selectMenu}
           style={{ width: 240 }}
           defaultOpenKeys={['sub1']}
           selectedKeys={[this.state.current]}
           mode="inline">
           <Switch onChange={this.changeTheme} checkedChildren="亮" unCheckedChildren="暗" />
           <SubMenu key="sub1" title={<span><Icon type="calendar" /><span>事件单管理</span></span>}>
+            <Menu.Item key="0">事件单录入</Menu.Item>
             <Menu.Item key="1">事件分配</Menu.Item>
             <Menu.Item key="2">事件升级分配</Menu.Item>
           </SubMenu>
