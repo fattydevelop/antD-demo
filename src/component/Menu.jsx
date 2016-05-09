@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Menu,Icon,Switch} from 'antd';
+
 const SubMenu = Menu.SubMenu;
 
 const Sider = React.createClass({
@@ -10,7 +11,7 @@ const Sider = React.createClass({
     };
   },
   componentWillMount(){
-    console.log(3333,this.props.menuKey)
+    console.log('slider',this.props);
   },
   changeTheme(value){
     console.log(value)
@@ -26,6 +27,7 @@ const Sider = React.createClass({
    this.props.selectMenu(e.key);
   },
   render(){
+    const {dispatch} = this.props;
     return(
       <div>
         <Menu theme={this.state.theme}
@@ -61,7 +63,7 @@ const Sider = React.createClass({
             <Menu.Item key="12">密码管理</Menu.Item>
             <Menu.Item key="13">用户信息维护</Menu.Item>
           </SubMenu>
-        </Menu>
+        </Menu>v
       </div>
     );
   }

@@ -7,17 +7,29 @@ import WaitEvent from './event/WaitEvent.jsx';
 import DetailEvent from './event/DetailEvent.jsx';
 import './App.less';
 import {connect} from 'react-redux';
-import {selectMenu} from './redux/actions/navigate';
+import {initEvent} from './redux/actions/init.js';
 import { Router, Route, Link,hashHistory } from 'react-router';
+/*
+* 引入全局mock数据   事件单数据eventData
+*/
+
 
 const App = React.createClass({
+  getInitialState(){
+    return {
+      // eventData:eventData
+    }
+  },
+  componentDidMount(){
+    this.props.dispatch(initEvent());
+  },
   render(){
-    const {dispatch} = this.props;
+    const {store} = this.props;
     return(
       <div>
           <Header/>
           <div className="Main">
-            <div className="Sider"><Sider selectMenu={key => dispatch(selectMenu(key))}/></div>
+            <div className="Sider"><Sider/></div>
             <div className="Content">
               <Router history={hashHistory}>
               <Route path="/">
@@ -34,6 +46,7 @@ const App = React.createClass({
   }
 });
 function mapStateToProps(state){
-  return {menuKey:state.menuKey}
+  return {todo:state.todo,
+  finished:state.finished}
 };
-export default connect(mapStateToProps)(App);
+export default connect(null)(App);

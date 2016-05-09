@@ -1,12 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Input, Select,Checkbox,Radio, Row, Col,Button } from 'antd';
+import { Form, Input, Select,Checkbox,Radio, Row, Col,Button,Upload, message, Icon} from 'antd';
+import {connect} from 'react-redux';
+import {initEvent} from '../redux/actions/init.js';
 import '../../common/main.less';
+import Store from '../redux/store/configureStore.dev.js';
+
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
 
-const NewEvent = React.createClass({
+const props = {
+  name: 'file',
+  action: '/upload.do',
+  headers: {
+    authorization: 'authorization-text',
+  },
+  onChange(info) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} 上传成功。`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} 上传失败。`);
+    }
+  },
+  defaultFileList: [{
+    uid: -1,
+    name: 'xxx.png',
+    status: 'done',
+    url: 'http://www.baidu.com/xxx.png'
+  }, {
+    uid: -2,
+    name: 'yyy.png',
+    status: 'done',
+    url: 'http://www.baidu.com/yyy.png'
+  }]
+};
+
+let NewEvent = React.createClass({
+
   getInitialState(){
     return {
       eventId:'201605050001',
@@ -27,9 +61,27 @@ const NewEvent = React.createClass({
       area:e
     });
   },
+  handleSubmit(e){
+    e.preventDefault();
+    console.log('dispatch',this.props.dispatch(initEvent()));
+    console.log(this.props)
+    let newBill = this.props.form.getFieldsValue();
+    // newBill.eventId = this.state.eventId;
+    // newBill.emergence = this.state.emergence;
+    // newBill.area = this.state.area;
+    // newBill.order = this.state.area*this.state.emergence;
+    // console.log(this.props)
+    // if(newBill.status=='todo')
+    //   this.props.eventData.todo.push(newBill);
+    // else if(newBill.status=='finished')
+    //   this.props.eventData.finished.push(newBill);
+    // console.log(this.props);
+  },
   render(){
+    const { getFieldProps } = this.props.form;
     return(
-      <Form horizontal className="NewEvent">
+      <Form horizontal className="NewEvent" onSubmit={this.handleSubmit} store={Store()}>
+      <div>{this.props.todo}</div>
       <Row>
         <Col span="8">
            <FormItem
@@ -37,7 +89,7 @@ const NewEvent = React.createClass({
              id="username"
              labelCol={{ span: 8 }}
              wrapperCol={{ span: 12 }}>
-             <Input id="username-input" placeholder="Please enter..." />
+             <Input id="username-input" name="username" {...getFieldProps('username')} placeholder="Please enter..." />
            </FormItem>
         </Col>
         <Col span="8">
@@ -46,7 +98,7 @@ const NewEvent = React.createClass({
              id="company"
              labelCol={{ span: 8 }}
              wrapperCol={{ span: 12 }}>
-             <Input id="company-input" placeholder="Please enter..." />
+             <Input id="company-input" name="company" {...getFieldProps('company')} placeholder="Please enter..." />
            </FormItem>
         </Col>
         <Col span="8">
@@ -55,7 +107,7 @@ const NewEvent = React.createClass({
             id="tel"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 12 }}>
-            <Input id="tel-input" placeholder="Please enter..." />
+            <Input id="tel-input" name="tel" {...getFieldProps('tel')} placeholder="Please enter..." />
           </FormItem>
         </Col>
       </Row>
@@ -67,7 +119,7 @@ const NewEvent = React.createClass({
               id="serviceName"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Input id="serviceName-input" placeholder="Please enter..." />
+              <Input id="serviceName-input" {...getFieldProps('serviceName')} name="serviceName" placeholder="Please enter..." />
             </FormItem>
         </Col>
         <Col span="8">
@@ -76,7 +128,7 @@ const NewEvent = React.createClass({
               id="servceTel"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Input id="servceTel-input" placeholder="Please enter..." />
+              <Input id="servceTel-input" {...getFieldProps('servceTel')} placeholder="Please enter..." />
             </FormItem>
         </Col>
       </Row>
@@ -96,7 +148,7 @@ const NewEvent = React.createClass({
               id="bizArea"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="bizArea-select" size="large" defaultValue="www" style={{ width: 200 }}>
+              <Select id="bizArea-select" size="large" {...getFieldProps('bizArea', { initialValue: 'www' })} defaultValue="www" style={{ width: 200 }}>
                 <Option value="www">网络</Option>
                 <Option value="insurance">走保</Option>
                 <Option value="jianding">鉴定</Option>
@@ -109,7 +161,7 @@ const NewEvent = React.createClass({
               id="eventType"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="eventType-select" size="large" defaultValue="bad" style={{ width: 200 }}>
+              <Select id="eventType-select" size="large" {...getFieldProps('type', { initialValue: 'bad' })} defaultValue="bad" style={{ width: 200 }}>
                 <Option value="bad">故障</Option>
                 <Option value="ask">咨询</Option>
                 <Option value="need">需求</Option>
@@ -161,7 +213,7 @@ const NewEvent = React.createClass({
              id="eventDescribe"
              labelCol={{ span: 8 }}
              wrapperCol={{ span: 16 }}>
-             <Input type="textarea" id="eventDescribe-textarea" rows="3" />
+             <Input type="textarea"  {...getFieldProps('describe')}  id="eventDescribe-textarea" rows="3" />
            </FormItem>
         </Col>
         <Col span="8">
@@ -170,7 +222,7 @@ const NewEvent = React.createClass({
             id="solution"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}>
-            <Input type="textarea" id="control-textarea" rows="3" />
+            <Input type="textarea"  {...getFieldProps('solution')}  id="solution-textarea" rows="3" />
           </FormItem>
 
         </Col>
@@ -182,7 +234,11 @@ const NewEvent = React.createClass({
               id="copy"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Input type="upload" id="copy-upload"/>
+              <Upload {...props}>
+                <Button type="ghost">
+                  <Icon type="upload" /> 点击上传
+                </Button>
+              </Upload>
             </FormItem>
         </Col>
         <Col span="8">
@@ -191,7 +247,7 @@ const NewEvent = React.createClass({
             id="status"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 12 }}>
-            <Select id="select" size="large" defaultValue="finished" style={{ width: 200 }}>
+            <Select id="select" size="large" {...getFieldProps('status',{initialValue:'todo'})} defaultValue="todo" style={{ width: 200 }}>
               <Option value="finished">已解决</Option>
               <Option value="todo">未处理</Option>
             </Select>
@@ -206,4 +262,12 @@ const NewEvent = React.createClass({
     );
   }
 });
-export default NewEvent;
+NewEvent = Form.create()(NewEvent)
+function mapStateToProps(state){
+  console.log(state)
+  return {
+    todo:state.todo,
+    finished:state.finished
+  }
+};
+export default connect()(NewEvent);

@@ -1,7 +1,7 @@
 import {SELECT_MENU} from '../actions/navigate.js'
 
 const initState = {
-  menuKey:''
+  menuKey:'123'
 };
 export default function navigate(state=initState,action){
   switch (action.type) {
