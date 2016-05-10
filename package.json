@@ -10,6 +10,7 @@
     "atool-build": "0.6.x",
     "babel-plugin-antd": "0.3.x",
     "es3ify-loader": "^0.1.0",
+    "moment": "^2.13.0",
     "react": "0.14.x",
     "react-dom": "0.14.x",
     "react-redux": "^4.4.5",

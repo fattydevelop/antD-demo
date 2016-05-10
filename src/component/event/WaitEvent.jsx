@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Table, Icon  } from 'antd';
+import {connect} from 'react-redux';
+
 import '../../common/main.less';
 
 const columns = [{
@@ -84,9 +86,14 @@ const WaitEvent = React.createClass({
   render(){
     return(
       <div className="WaitEvent">
-        <Table columns={columns} dataSource={data} rowKey={data=>data.eventId} />
+        <Table columns={columns} dataSource={this.props.todo} rowKey={data=>data.eventId} />
       </div>
     );
   }
 });
-export default WaitEvent;
+function mapStateToProps(state){
+  return {
+    todo:state.initReducer.todo,
+  }
+};
+export default connect(mapStateToProps)(WaitEvent);

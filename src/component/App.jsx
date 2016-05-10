@@ -5,6 +5,7 @@ import Header from './Header.jsx';
 import NewEvent from './event/NewEvent.jsx';
 import WaitEvent from './event/WaitEvent.jsx';
 import DetailEvent from './event/DetailEvent.jsx';
+import Home from './Home.jsx';
 import './App.less';
 import {connect} from 'react-redux';
 import {initEvent} from './redux/actions/init.js';
@@ -18,10 +19,18 @@ const App = React.createClass({
   getInitialState(){
     return {
       // eventData:eventData
+      current_page:'home'
     }
   },
-  componentDidMount(){
-    this.props.dispatch(initEvent());
+  changePage(key){
+    this.setState({
+      current_page:key
+    });
+    console.log(key);
+     window.location.hash = key;
+  },
+  componentWillMount(){
+    // this.props.dispatch(initEvent());
   },
   render(){
     const {store} = this.props;
@@ -29,14 +38,14 @@ const App = React.createClass({
       <div>
           <Header/>
           <div className="Main">
-            <div className="Sider"><Sider/></div>
+            <div className="Sider"><Sider changePage={this.changePage}/></div>
             <div className="Content">
               <Router history={hashHistory}>
               <Route path="/">
                 <Route path="newEvent" component={NewEvent}></Route>
                 <Route path="waitEvent" component={WaitEvent}></Route>
                 <Route path="waitEvent/:id" component={DetailEvent}></Route>
-                 <Route path="*" component={Sider}></Route>
+                <Route path="home" component={Home}></Route>
               </Route>
               </Router>
             </div>
@@ -45,8 +54,5 @@ const App = React.createClass({
     );
   }
 });
-function mapStateToProps(state){
-  return {todo:state.todo,
-  finished:state.finished}
-};
-export default connect(null)(App);
+
+export default App;

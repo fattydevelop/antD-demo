@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Form, Input, Select,Checkbox,Radio, Row, Col,Button,Upload, message, Icon} from 'antd';
 import {connect} from 'react-redux';
-import {initEvent} from '../redux/actions/init.js';
+import {initEvent,addEvent} from '../redux/actions/init.js';
 import '../../common/main.less';
-import Store from '../redux/store/configureStore.dev.js';
-
+import moment from 'moment';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
@@ -48,7 +47,19 @@ let NewEvent = React.createClass({
       area:1
     };
   },
-
+  componentWillMount(){
+    this.props.dispatch(initEvent());
+    let eventIdTemp = moment().format('YYYYMMDD0001');
+    this.props.todo.forEach((val)=>{
+      if(eventIdTemp<=val.eventId)
+        eventIdTemp =parseInt(val.eventId)+1;
+        eventIdTemp = eventIdTemp.toString();
+    })
+    this.setState({
+      eventId:eventIdTemp
+    });
+    window.location.hash='waitEvent';
+  },
   emergenceChange(e){
     console.log('select',e);
     this.setState({
@@ -63,14 +74,15 @@ let NewEvent = React.createClass({
   },
   handleSubmit(e){
     e.preventDefault();
-    console.log('dispatch',this.props.dispatch(initEvent()));
-    console.log(this.props)
+    console.log(this.props.todo)
     let newBill = this.props.form.getFieldsValue();
+    newBill.order = 'p'+this.state.area*this.state.emergence;
+    this.props.dispatch(addEvent(newBill));
+
     // newBill.eventId = this.state.eventId;
     // newBill.emergence = this.state.emergence;
     // newBill.area = this.state.area;
     // newBill.order = this.state.area*this.state.emergence;
-    // console.log(this.props)
     // if(newBill.status=='todo')
     //   this.props.eventData.todo.push(newBill);
     // else if(newBill.status=='finished')
@@ -80,8 +92,7 @@ let NewEvent = React.createClass({
   render(){
     const { getFieldProps } = this.props.form;
     return(
-      <Form horizontal className="NewEvent" onSubmit={this.handleSubmit} store={Store()}>
-      <div>{this.props.todo}</div>
+      <Form horizontal className="NewEvent" onSubmit={this.handleSubmit}>
       <Row>
         <Col span="8">
            <FormItem
@@ -149,9 +160,9 @@ let NewEvent = React.createClass({
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
               <Select id="bizArea-select" size="large" {...getFieldProps('bizArea', { initialValue: 'www' })} defaultValue="www" style={{ width: 200 }}>
-                <Option value="www">网络</Option>
-                <Option value="insurance">走保</Option>
-                <Option value="jianding">鉴定</Option>
+                <Option value="网络">网络</Option>
+                <Option value="走保">走保</Option>
+                <Option value="鉴定">鉴定</Option>
               </Select>
             </FormItem>
         </Col>
@@ -162,9 +173,9 @@ let NewEvent = React.createClass({
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
               <Select id="eventType-select" size="large" {...getFieldProps('type', { initialValue: 'bad' })} defaultValue="bad" style={{ width: 200 }}>
-                <Option value="bad">故障</Option>
-                <Option value="ask">咨询</Option>
-                <Option value="need">需求</Option>
+                <Option value="故障">故障</Option>
+                <Option value="咨询">咨询</Option>
+                <Option value="需求">需求</Option>
               </Select>
             </FormItem>
         </Col>
@@ -264,10 +275,9 @@ let NewEvent = React.createClass({
 });
 NewEvent = Form.create()(NewEvent)
 function mapStateToProps(state){
-  console.log(state)
   return {
-    todo:state.todo,
-    finished:state.finished
+    todo:state.initReducer.todo,
+    finished:state.initReducer.finished
   }
 };
-export default connect()(NewEvent);
+export default connect(mapStateToProps)(NewEvent);
