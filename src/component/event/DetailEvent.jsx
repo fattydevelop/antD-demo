@@ -5,7 +5,10 @@ import '../../common/main.less';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
-import NewEvent from './NewEvent.jsx'
+import NewEvent from './NewEvent.jsx';
+import {connect} from 'react-redux';
+import {initEvent,addEvent,currentEvent} from '../redux/actions/init.js';
+
 
 const DetailEvent = React.createClass({
   getInitialState(){
@@ -15,6 +18,9 @@ const DetailEvent = React.createClass({
       area:1,
       detail:true
     };
+  },
+  componentWillMount(){
+    this.props.dispatch(currentEvent(this.props.params.id))
   },
 
   render(){
@@ -95,4 +101,9 @@ const DetailEvent = React.createClass({
     );
   }
 });
-export default DetailEvent;
+function mapStateToProps(state){
+  return {
+    current:state.initReducer.current,
+  }
+};
+export default connect(mapStateToProps)(DetailEvent);

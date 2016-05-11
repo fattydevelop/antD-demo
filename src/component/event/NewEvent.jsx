@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Input, Select,Checkbox,Radio, Row, Col,Button,Upload, message, Icon} from 'antd';
+import { Form, Input, Select,Checkbox,Radio, Row, Col,Button,Upload, message, Icon,DatePicker,Message } from 'antd';
 import {connect} from 'react-redux';
 import {initEvent,addEvent} from '../redux/actions/init.js';
 import '../../common/main.less';
@@ -58,7 +58,7 @@ let NewEvent = React.createClass({
     this.setState({
       eventId:eventIdTemp
     });
-    window.location.hash='waitEvent';
+    // window.location.hash='waitEvent';
   },
   emergenceChange(e){
     console.log('select',e);
@@ -76,18 +76,16 @@ let NewEvent = React.createClass({
     e.preventDefault();
     console.log(this.props.todo)
     let newBill = this.props.form.getFieldsValue();
-    newBill.order = 'p'+this.state.area*this.state.emergence;
+    newBill.startTime = this.props.form.getFieldValue('startTime')?this.props.form.getFieldValue('startTime').toISOString().slice(0,10):null;
+    newBill.endTime = this.props.form.getFieldValue('endTime')?this.props.form.getFieldValue('endTime').toISOString().slice(0,10):null;
+    newBill.eventId = this.state.eventId;
+    newBill.order = 'P'+this.state.area*this.state.emergence;
     this.props.dispatch(addEvent(newBill));
 
-    // newBill.eventId = this.state.eventId;
-    // newBill.emergence = this.state.emergence;
-    // newBill.area = this.state.area;
-    // newBill.order = this.state.area*this.state.emergence;
-    // if(newBill.status=='todo')
-    //   this.props.eventData.todo.push(newBill);
-    // else if(newBill.status=='finished')
-    //   this.props.eventData.finished.push(newBill);
-    // console.log(this.props);
+    Message.success('保存成功，将在3s后跳转到待办列表')
+    window.setTimeout(()=>{
+      window.location.hash = '/waitEvent';
+    },3000)
   },
   render(){
     const { getFieldProps } = this.props.form;
@@ -159,7 +157,7 @@ let NewEvent = React.createClass({
               id="bizArea"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="bizArea-select" size="large" {...getFieldProps('bizArea', { initialValue: 'www' })} defaultValue="www" style={{ width: 200 }}>
+              <Select id="bizArea-select" size="large" {...getFieldProps('bizArea', { initialValue: '网络' })} defaultValue="网络" style={{ width: 200 }}>
                 <Option value="网络">网络</Option>
                 <Option value="走保">走保</Option>
                 <Option value="鉴定">鉴定</Option>
@@ -172,7 +170,7 @@ let NewEvent = React.createClass({
               id="eventType"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="eventType-select" size="large" {...getFieldProps('type', { initialValue: 'bad' })} defaultValue="bad" style={{ width: 200 }}>
+              <Select id="eventType-select" size="large" {...getFieldProps('type', { initialValue: '故障' })} defaultValue="故障" style={{ width: 200 }}>
                 <Option value="故障">故障</Option>
                 <Option value="咨询">咨询</Option>
                 <Option value="需求">需求</Option>
@@ -234,6 +232,27 @@ let NewEvent = React.createClass({
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}>
             <Input type="textarea"  {...getFieldProps('solution')}  id="solution-textarea" rows="3" />
+          </FormItem>
+
+        </Col>
+      </Row>
+      <Row>
+        <Col span="8">
+           <FormItem
+             label="发生时间："
+             id="startTime"
+             labelCol={{ span: 8 }}
+             wrapperCol={{ span: 16 }}>
+              <DatePicker {...getFieldProps('startTime')} format="yyyy-MM-dd"/>
+           </FormItem>
+        </Col>
+        <Col span="8">
+          <FormItem
+            label="要求解决时间："
+            id="endTime"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}>
+              <DatePicker {...getFieldProps('endTime')} format="yyyy-MM-dd"/>
           </FormItem>
 
         </Col>

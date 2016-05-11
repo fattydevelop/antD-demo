@@ -16,8 +16,9 @@ const initState = {
       solution:'buzhidao',
       order:'P6',
       status:'todo',
+      statusText:'处理中',
       startTime:'2016-05-05',
-      finishTime:'2016-05-06'
+      endTime:'2016-05-06'
     }, {
       eventId: '201605050002',
       describe:'走保打不开',
@@ -32,8 +33,9 @@ const initState = {
       solution:'buzhidao',
       order:'P6',
       status:'todo',
+      statusText:'处理中',
       startTime:'2016-05-05',
-      finishTime:'2016-05-06'
+      endTime:'2016-05-06'
     }, {
       eventId: '201605050003',
       describe:'走保打不开',
@@ -48,13 +50,15 @@ const initState = {
       solution:'buzhidao',
       order:'P6',
       status:'todo',
+      statusText:'处理中',
       startTime:'2016-05-05',
-      finishTime:'2016-05-06'
+      endTime:'2016-05-06'
     }
   ],
   finished:[
 
-  ]
+  ],
+  current:{}
 };
 export default function init(state=initState,action){
   switch (action.type) {
@@ -65,16 +69,37 @@ export default function init(state=initState,action){
         }
         break;
     case ADD_EVENT:
-      console.log(action.obj)
-      if(action.obj.status=='todo')
-        state.todo.push(action.obj)
-      else
+      if(action.obj.status=='todo'){
+        action.obj.statusText = '处理中';
+        state.todo.push(action.obj);
+      }
+      else{
+        action.obj.statusText = '处理完成';
         state.finished.push(action.obj)
-        return {
-          todo:state.todo,
-          finished:state.finished
-        }
-        break;
+      }
+      return {
+        todo:state.todo,
+        finished:state.finished
+      }
+      break;
+    case CURRENT_EVENT:
+      if(action.id){
+        state.todo.forEach((val)=>{
+          if(val.id==action.id)
+            return {
+              current:val
+            }
+        });
+        state.finished.forEach((val)=>{
+          if(val.id==action.id)
+            return {
+              current:val
+            }
+        });
+      }
+      else {
+        return state;
+      }
     default:
         return state;
   }

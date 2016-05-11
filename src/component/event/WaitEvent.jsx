@@ -18,8 +18,8 @@ const columns = [{
   key: 'describe',
 }, {
   title: '事件领域',
-  dataIndex: 'area',
-  key: 'area',
+  dataIndex: 'bizArea',
+  key: 'bizArea',
 }, {
   title: '事件类型',
   dataIndex: 'type',
@@ -30,16 +30,16 @@ const columns = [{
   key: 'order',
 }, {
   title: '事件状态',
-  dataIndex: 'status',
-  key: 'status',
+  dataIndex: 'statusText',
+  key: 'statusText',
 }, {
   title: '起始时间',
   dataIndex: 'startTime',
   key: 'startTime',
 }, {
   title: '要求完成时间',
-  dataIndex: 'finishTime',
-  key: 'finishTime',
+  dataIndex: 'endTime',
+  key: 'endTime',
 },{
   title: '操作',
   key: 'operation',
@@ -51,34 +51,6 @@ const columns = [{
       </span>
     );
   }
-}];
-const data = [{
-  eventId: '201605050001',
-  describe:'走保打不开',
-  area: '走保单',
-  type: '咨询',
-  order:'P6',
-  status:'处理中',
-  startTime:'2016-05-05',
-  finishTime:'2016-05-06'
-}, {
-  eventId: '201605050002',
-  describe:'走保打不开',
-  area: '走保单',
-  type: '咨询',
-  order:'P6',
-  status:'处理中',
-  startTime:'2016-05-05',
-  finishTime:'2016-05-06'
-}, {
-  eventId: '201605050003',
-  describe:'走保打不开',
-  area: '走保单',
-  type: '咨询',
-  order:'P6',
-  status:'处理中',
-  startTime:'2016-05-05',
-  finishTime:'2016-05-06'
 }];
 
 const WaitEvent = React.createClass({
