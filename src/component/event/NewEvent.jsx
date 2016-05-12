@@ -48,23 +48,30 @@ let NewEvent = React.createClass({
     };
   },
   componentWillMount(){
-    this.props.dispatch(initEvent());
+    if(this.props.dispatch)
+      this.props.dispatch(initEvent());
     let eventIdTemp = moment().format('YYYYMMDD0001');
-    this.props.todo.forEach((val)=>{
-      if(eventIdTemp<=val.eventId)
-        eventIdTemp =parseInt(val.eventId)+1;
-        eventIdTemp = eventIdTemp.toString();
-    })
+    if(this.props.todo)
+      this.props.todo.forEach((val)=>{
+        if(eventIdTemp<=val.eventId)
+          eventIdTemp =parseInt(val.eventId)+1;
+          eventIdTemp = eventIdTemp.toString();
+      })
     this.setState({
       eventId:eventIdTemp
     });
     // window.location.hash='waitEvent';
+  },
+  componentWillReceiveProps(){
+    if(this.props.current)
+      this.props.form.setFieldsValue(this.props.current);
   },
   emergenceChange(e){
     console.log('select',e);
     this.setState({
       emergence:e
     });
+    console.log(this)
   },
   areaChange(e){
     console.log('select',e);
@@ -98,7 +105,7 @@ let NewEvent = React.createClass({
              id="username"
              labelCol={{ span: 8 }}
              wrapperCol={{ span: 12 }}>
-             <Input id="username-input" name="username" {...getFieldProps('username')} placeholder="Please enter..." />
+             <Input id="username-input" name="username" {...getFieldProps('username')}  placeholder="Please enter..."/>
            </FormItem>
         </Col>
         <Col span="8">
@@ -296,7 +303,13 @@ NewEvent = Form.create()(NewEvent)
 function mapStateToProps(state){
   return {
     todo:state.initReducer.todo,
-    finished:state.initReducer.finished
+    finished:state.initReducer.finished,
+    current:state.initReducer.current
   }
 };
-export default connect(mapStateToProps)(NewEvent);
+let NewEventContainer = connect(mapStateToProps)(NewEvent);
+let NewEventCom = {
+  ExsitEvent:NewEvent,
+  NewEvent:NewEventContainer
+}
+export default NewEventCom;

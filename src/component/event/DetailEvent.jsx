@@ -5,7 +5,7 @@ import '../../common/main.less';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const Option = Select.Option;
-import NewEvent from './NewEvent.jsx';
+import {ExsitEvent} from './NewEvent.jsx';
 import {connect} from 'react-redux';
 import {initEvent,addEvent,currentEvent} from '../redux/actions/init.js';
 
@@ -20,15 +20,18 @@ const DetailEvent = React.createClass({
     };
   },
   componentWillMount(){
-    this.props.dispatch(currentEvent(this.props.params.id))
+    this.props.dispatch(currentEvent(this.props.params.id.toString()))
+    console.log(this.props.current)
   },
-
+ handleSubmit(){
+   console.log(this)
+ },
   render(){
     return(
       <div>
-        <NewEvent detail={this.state.detail}/>
+        <ExsitEvent current={this.props.current}/>
         <hr/>
-        <Form horizontal className="DetailEvent">
+        <Form horizontal className="DetailEvent" onSubmit={this.handleSubmit}>
           <Row>
             <Col span="8">
                <FormItem
@@ -93,7 +96,7 @@ const DetailEvent = React.createClass({
                 </FormItem>
             </Col>
             <Col span="8" offset="1">
-              <Button type="primary">完成</Button>
+              <Button type="primary" htmlType="submit">完成</Button>
             </Col>
           </Row>
         </Form>

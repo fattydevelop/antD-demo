@@ -2,7 +2,7 @@ import React from 'react';
 import { DatePicker,Row,Col } from 'antd';
 import Sider from './Menu.jsx';
 import Header from './Header.jsx';
-import NewEvent from './event/NewEvent.jsx';
+import {NewEvent} from './event/NewEvent.jsx';
 import WaitEvent from './event/WaitEvent.jsx';
 import DetailEvent from './event/DetailEvent.jsx';
 import Home from './Home.jsx';

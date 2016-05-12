@@ -84,23 +84,28 @@ export default function init(state=initState,action){
       break;
     case CURRENT_EVENT:
       if(action.id){
+        let currentTmp ={};
         state.todo.forEach((val)=>{
-          if(val.id==action.id)
-            return {
-              current:val
-            }
+          if(val.eventId==action.id){
+            currentTmp = val;
+            return false;
+          }
         });
         state.finished.forEach((val)=>{
-          if(val.id==action.id)
-            return {
-              current:val
-            }
+          if(val.eventId==action.id){
+            currentTmp = val;
+            return false;
+          }
         });
+        return  {
+          current:currentTmp
+        };
       }
       else {
         return state;
       }
+      break;
     default:
-        return state;
+      return state;
   }
 }
