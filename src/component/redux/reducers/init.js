@@ -1,4 +1,4 @@
-import {INIT_EVENT,CURRENT_EVENT,ADD_EVENT} from '../actions/init.js'
+import {INIT_EVENT,CURRENT_EVENT,ADD_EVENT,DEAL_EVENT} from '../actions/init.js'
 
 const initState = {
   todo:[
@@ -98,12 +98,25 @@ export default function init(state=initState,action){
           }
         });
         return  {
+          todo:state.todo,
+          finished:state.finished,
           current:currentTmp
         };
       }
       else {
         return state;
       }
+      break;
+    case DEAL_EVENT:
+      if(action.id){
+        state.todo.forEach((val)=>{
+          if(val.eventId==action.id){
+            val.dealInfo = action.obj;
+            return false;
+          }
+        })
+      }
+      return state;
       break;
     default:
       return state;

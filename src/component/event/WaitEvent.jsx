@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Table, Icon  } from 'antd';
 import {connect} from 'react-redux';
-
+import {Link} from 'react-router';
 import '../../common/main.less';
 
 const columns = [{
@@ -47,7 +47,7 @@ const columns = [{
     const url = record.eventId;
     return (
       <span>
-        <a href= {'#/WaitEvent/'+record.eventId}>操作</a>
+        <Link key={record.eventId} to={`/waitEvent/${record.eventId}`}>操作</Link>
       </span>
     );
   }

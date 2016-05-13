@@ -1,37 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Input, Select,Checkbox,Radio, Row, Col,Button } from 'antd';
+import { Form, Input, Select,Checkbox,Radio, Row, Col,Button, Collapse} from 'antd';
 import '../../common/main.less';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
+const Panel = Collapse.Panel;
 const Option = Select.Option;
 import {ExsitEvent} from './NewEvent.jsx';
 import {connect} from 'react-redux';
-import {initEvent,addEvent,currentEvent} from '../redux/actions/init.js';
+import {initEvent,addEvent,currentEvent,dealEvent} from '../redux/actions/init.js';
 
 
-const DetailEvent = React.createClass({
+let DetailEvent = React.createClass({
   getInitialState(){
     return {
-      eventId:'201605050001',
-      emergence:1,
-      area:1,
       detail:true
     };
   },
   componentWillMount(){
-    this.props.dispatch(currentEvent(this.props.params.id.toString()))
-    console.log(this.props.current)
+    this.props.dispatch(currentEvent(this.props.params.id.toString()));
+    console.log(this.props.current);
   },
- handleSubmit(){
-   console.log(this)
+ handleSubmitDetail(e){
+   e.preventDefault();
+   let dealInfo = this.props.form.getFieldsValue();
+   this.props.dispatch(dealEvent(this.props.params.id,dealInfo));
+ },
+ expandEvent(){
+
  },
   render(){
+    const { getFieldProps } = this.props.form;
     return(
       <div>
-        <ExsitEvent current={this.props.current}/>
+        <Collapse defaultActiveKey={['事件详情']} onChange={this.expandEvent}>
+          <Panel header="事件详情" key="1">
+            <ExsitEvent current={this.props.current} detail={this.state.detail}/>
+          </Panel>
+         </Collapse>
         <hr/>
-        <Form horizontal className="DetailEvent" onSubmit={this.handleSubmit}>
+        <Form horizontal className="DetailEvent" onSubmit={this.handleSubmitDetail}>
           <Row>
             <Col span="8">
                <FormItem
@@ -39,7 +47,7 @@ const DetailEvent = React.createClass({
                  id="dealMan"
                  labelCol={{ span: 8 }}
                  wrapperCol={{ span: 12 }}>
-                 <Input id="dealMan-input" placeholder="Please enter..." />
+                 <Input id="dealMan-input" placeholder="Please enter..." {...getFieldProps('dealMan')}/>
                </FormItem>
             </Col>
             <Col span="8">
@@ -48,7 +56,7 @@ const DetailEvent = React.createClass({
                  id="dealTel"
                  labelCol={{ span: 8 }}
                  wrapperCol={{ span: 12 }}>
-                 <Input id="dealTel-input" placeholder="Please enter..." />
+                 <Input id="dealTel-input" placeholder="Please enter..." {...getFieldProps('dealTel')}/>
                </FormItem>
             </Col>
           </Row>
@@ -59,7 +67,7 @@ const DetailEvent = React.createClass({
                  id="dealCause"
                  labelCol={{ span: 8 }}
                  wrapperCol={{ span: 12 }}>
-                 <Input id="dealCause-input" type="textarea"/>
+                 <Input id="dealCause-input" type="textarea" {...getFieldProps('dealCause')}/>
                </FormItem>
             </Col>
             <Col span="8">
@@ -68,16 +76,15 @@ const DetailEvent = React.createClass({
                  id="dealSuggest"
                  labelCol={{ span: 8 }}
                  wrapperCol={{ span: 12 }}>
-                 <Input id="dealSuggest-input" type="textarea"/>
+                 <Input id="dealSuggest-input" type="textarea" {...getFieldProps('dealSuggest')}/>
                </FormItem>
             </Col>
             <Col span="8">
               <FormItem
                 label="处理措施："
-                id="dealSolution"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 12 }}>
-                <Input id="tel-input" type="textarea"/>
+                <Input id="dealSolution-input" type="textarea" {...getFieldProps('dealSolution')}/>
               </FormItem>
             </Col>
           </Row>
@@ -88,10 +95,10 @@ const DetailEvent = React.createClass({
                   id="result"
                   labelCol={{ span: 8 }}
                   wrapperCol={{ span: 12 }}>
-                  <Select id="bizArea-select" size="large" defaultValue="finsih" style={{ width: 200 }}>
-                    <Option value="finsih">结单</Option>
-                    <Option value="proNeed">升级需求单</Option>
-                    <Option value="proQuestion">升级问题单</Option>
+                  <Select id="result-select" size="large"  style={{ width: 200 }} {...getFieldProps('result', { initialValue: '结单' })}>
+                    <Option value="结单">结单</Option>
+                    <Option value="升级需求单">升级需求单</Option>
+                    <Option value="升级问题单">升级问题单</Option>
                   </Select>
                 </FormItem>
             </Col>
@@ -104,9 +111,12 @@ const DetailEvent = React.createClass({
     );
   }
 });
+DetailEvent = Form.create()(DetailEvent);
 function mapStateToProps(state){
   return {
     current:state.initReducer.current,
+    todo:state.initReducer.todo,
+    finished:state.initReducer.finished
   }
 };
 export default connect(mapStateToProps)(DetailEvent);

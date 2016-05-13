@@ -60,10 +60,9 @@ let NewEvent = React.createClass({
     this.setState({
       eventId:eventIdTemp
     });
-    // window.location.hash='waitEvent';
   },
-  componentWillReceiveProps(){
-    if(this.props.current)
+  componentDidMount(){
+    if(this.props.detail)
       this.props.form.setFieldsValue(this.props.current);
   },
   emergenceChange(e){
@@ -71,7 +70,7 @@ let NewEvent = React.createClass({
     this.setState({
       emergence:e
     });
-    console.log(this)
+    console.log(this);
   },
   areaChange(e){
     console.log('select',e);
@@ -80,8 +79,8 @@ let NewEvent = React.createClass({
     });
   },
   handleSubmit(e){
+    console.log(1111);
     e.preventDefault();
-    console.log(this.props.todo)
     let newBill = this.props.form.getFieldsValue();
     newBill.startTime = this.props.form.getFieldValue('startTime')?this.props.form.getFieldValue('startTime').toISOString().slice(0,10):null;
     newBill.endTime = this.props.form.getFieldValue('endTime')?this.props.form.getFieldValue('endTime').toISOString().slice(0,10):null;
@@ -132,7 +131,6 @@ let NewEvent = React.createClass({
         <Col span="8">
             <FormItem
               label="客服："
-              id="serviceName"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
               <Input id="serviceName-input" {...getFieldProps('serviceName')} name="serviceName" placeholder="Please enter..." />
@@ -161,10 +159,9 @@ let NewEvent = React.createClass({
         <Col span="8">
             <FormItem
               label="业务领域："
-              id="bizArea"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="bizArea-select" size="large" {...getFieldProps('bizArea', { initialValue: '网络' })} defaultValue="网络" style={{ width: 200 }}>
+              <Select id="bizArea" size="large" {...getFieldProps('bizArea', { initialValue: '网络' })} defaultValue="网络" style={{ width: 200 }}>
                 <Option value="网络">网络</Option>
                 <Option value="走保">走保</Option>
                 <Option value="鉴定">鉴定</Option>
@@ -174,10 +171,9 @@ let NewEvent = React.createClass({
         <Col span="8">
             <FormItem
               label="事件类型："
-              id="eventType"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="eventType-select" size="large" {...getFieldProps('type', { initialValue: '故障' })} defaultValue="故障" style={{ width: 200 }}>
+              <Select id="eventType" size="large" {...getFieldProps('type', { initialValue: '故障' })} defaultValue="故障" style={{ width: 200 }}>
                 <Option value="故障">故障</Option>
                 <Option value="咨询">咨询</Option>
                 <Option value="需求">需求</Option>
@@ -189,10 +185,9 @@ let NewEvent = React.createClass({
         <Col span="8">
             <FormItem
               label="事件紧急程度："
-              id="emergence"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="emergence-select" size="large" defaultValue="1" style={{ width: 200 }} onSelect={this.emergenceChange}>
+              <Select id="emergence" size="large" {...getFieldProps('emergence', { initialValue: '1' })} defaultValue="1" style={{ width: 200 }} onSelect={this.emergenceChange}>
                 <Option value="1">低</Option>
                 <Option value="2">中</Option>
                 <Option value="3">高</Option>
@@ -202,10 +197,9 @@ let NewEvent = React.createClass({
         <Col span="8">
             <FormItem
               label="事件范围级别："
-              id="eventArea-input"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Select id="eventArea-select" size="large" defaultValue="1" style={{ width: 200 }} onSelect={this.areaChange}>
+              <Select id="eventArea" size="large" {...getFieldProps('eventArea', { initialValue: '1' })}  defaultValue="1" style={{ width: 200 }} onSelect={this.areaChange}>
                 <Option value="1">单个</Option>
                 <Option value="2">群体</Option>
                 <Option value="3">全部</Option>
@@ -215,10 +209,9 @@ let NewEvent = React.createClass({
         <Col span="8">
             <FormItem
               label="事件优先级："
-              id="serviceName-input"
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 12 }}>
-              <Input id="control-input" disabled value={this.state.emergence*this.state.area+'级'} />
+              <Input id="control" disabled value={this.state.emergence*this.state.area+'级'} />
             </FormItem>
         </Col>
       </Row>
@@ -291,7 +284,7 @@ let NewEvent = React.createClass({
           </FormItem>
         </Col>
       </Row>
-      <FormItem className="buttonGroup" wrapperCol={{ span: 4, offset: 10 }} style={{ marginTop: 24 ,display:this.props.detail?"none":"block"}}>
+      <FormItem className="buttonGroup" wrapperCol={{ span: 4, offset: 10 }} style={{ marginTop: 24 ,display:this.props.current?"none":"block"}}>
           <Button type="primary" htmlType="submit">保存</Button>
           <Button type="ghost" htmlType="submit">取消</Button>
       </FormItem>
@@ -299,7 +292,13 @@ let NewEvent = React.createClass({
     );
   }
 });
-NewEvent = Form.create()(NewEvent)
+NewEvent = Form.create({
+  // mapPropsToFields(props){
+  //   return {
+  //     current: props.current,
+  //   }
+  // }
+})(NewEvent);
 function mapStateToProps(state){
   return {
     todo:state.initReducer.todo,
