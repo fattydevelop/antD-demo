@@ -9,9 +9,6 @@ const columns = [{
   title: '事件单号',
   dataIndex: 'eventId',
   key: 'eventId',
-  // render(text) {
-  //   return <a href="#/waitEvent/">{text}</a>;
-  // }
 }, {
   title: '事件概述',
   dataIndex: 'describe',

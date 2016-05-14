@@ -79,7 +79,6 @@ let NewEvent = React.createClass({
     });
   },
   handleSubmit(e){
-    console.log(1111);
     e.preventDefault();
     let newBill = this.props.form.getFieldsValue();
     newBill.startTime = this.props.form.getFieldValue('startTime')?this.props.form.getFieldValue('startTime').toISOString().slice(0,10):null;
