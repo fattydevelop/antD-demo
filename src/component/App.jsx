@@ -5,8 +5,11 @@ import Header from './Header.jsx';
 import {NewEvent} from './event/NewEvent.jsx';
 import WaitEvent from './event/WaitEvent.jsx';
 import DetailEvent from './event/DetailEvent.jsx';
+import EventChange from './event/EventChange.jsx';
 import Home from './Home.jsx';
-import {NewComplainContainer} from './complain/newComplain.jsx'
+import {NewComplainContainer} from './complain/newComplain.jsx';
+import ComplainList from './complain/complainList.jsx';
+import DetailComplain from './complain/detailComplain.jsx';
 import './App.less';
 import {connect} from 'react-redux';
 import {initEvent} from './redux/actions/init.js';
@@ -46,7 +49,10 @@ const App = React.createClass({
                 <Route path="newEvent" component={NewEvent}></Route>
                 <Route path="waitEvent" component={WaitEvent}></Route>
                 <Route path="waitEvent/:id" component={DetailEvent}></Route>
+                <Route path ="eventChange" component={EventChange}></Route>
                 <Route path="newComplain" component={NewComplainContainer}></Route>
+                <Route path="complainList" component={ComplainList}></Route>
+                <Route path="complainList/:id" component={DetailComplain}></Route>
                 <Route path="home" component={Home}></Route>
               </Route>
               </Router>

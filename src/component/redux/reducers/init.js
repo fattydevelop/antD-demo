@@ -1,4 +1,4 @@
-import {INIT_EVENT,CURRENT_EVENT,ADD_EVENT,DEAL_EVENT} from '../actions/init.js'
+import {INIT_EVENT,CURRENT_EVENT,ADD_EVENT,DEAL_EVENT,EVENT_CHANGE} from '../actions/init.js'
 
 const initState = {
   todo:[
@@ -58,7 +58,21 @@ const initState = {
   finished:[
 
   ],
-  current:{}
+  current:{},
+  users:[
+    {
+      username:'yyf',
+      id:'23549493',
+      type:'开发工程师',
+      tel:'13301202012',
+    },
+    {
+      username:'fyy',
+      id:'13549493',
+      type:'客服',
+      tel:'13301202012',
+    }
+  ]
 };
 export default function init(state=initState,action){
   switch (action.type) {
@@ -116,6 +130,17 @@ export default function init(state=initState,action){
           }
         })
       }
+      return state;
+      break;
+    case EVENT_CHANGE:
+      if(action.arr.length)
+        state.todo.forEach((val)=>{
+          action.arr.forEach((event)=>{
+            if(val.eventId == event){
+              val.changeInfo = action.obj;
+            }
+          });
+        });
       return state;
       break;
     default:

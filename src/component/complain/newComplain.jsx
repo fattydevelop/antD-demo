@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Input, Select,Checkbox,Radio, Modal,Row, Col,Button, Collapse,Table} from 'antd';
+import { Form, Input, Select,Checkbox,Radio, Modal,Row, Col,Button, Collapse,Table,DatePicker,Message} from 'antd';
 import '../../common/main.less';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -57,7 +57,8 @@ let NewComplain = React.createClass({
   getInitialState(){
     return {
       complainId:'201605050001',
-      visible: false
+      visible: false,
+      complainTime:''
     };
   },
   showModal() {
@@ -79,10 +80,10 @@ let NewComplain = React.createClass({
     })
   },
   handleCancel(e) {
-  console.log(e);
-  this.setState({
-    visible: false,
-  });
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
   },
   componentWillMount(){
     if(this.props.dispatch)
@@ -95,7 +96,9 @@ let NewComplain = React.createClass({
           complainIdTemp = complainIdTemp.toString();
       })
     this.setState({
-      complainId:complainIdTemp
+      complainId:complainIdTemp,
+      complainTime:moment().format('YYYY-MM-DD')
+
     });
   },
   componentDidMount(){
@@ -118,15 +121,13 @@ let NewComplain = React.createClass({
   handleSubmit(e){
     e.preventDefault();
     let newBill = this.props.form.getFieldsValue();
-    newBill.startTime = this.props.form.getFieldValue('startTime')?this.props.form.getFieldValue('startTime').toISOString().slice(0,10):null;
-    newBill.endTime = this.props.form.getFieldValue('endTime')?this.props.form.getFieldValue('endTime').toISOString().slice(0,10):null;
-    newBill.eventId = this.state.eventId;
-    newBill.order = 'P'+this.state.area*this.state.emergence;
-    this.props.dispatch(addEvent(newBill));
+    newBill.complainTime = this.state.complainTime;
+    newBill.complainId = this.state.complainId;
+    this.props.dispatch(addComplain(newBill));
 
     Message.success('保存成功，将在3s后跳转到投诉列表')
     window.setTimeout(()=>{
-      window.location.hash = '/waitEvent';
+      window.location.hash = '/complainList';
     },3000)
   },
   render(){
@@ -160,21 +161,21 @@ let NewComplain = React.createClass({
                 <Input id="eventId" {...getFieldProps('eventId')} onClick={this.showModal}/>
                 <Modal title="事件列表" visible={this.state.visible}
                   onOk={this.handleOk} onCancel={this.handleCancel} width="720">
-                  <Table columns={columns} dataSource={this.props.todo} rowKey={data=>data.eventId} onRowClick={this.selectEvent}/>
+                  <Table columns={columns} dataSource={this.props.eventTodo} rowKey={data=>data.eventId} onRowClick={this.selectEvent}/>
                 </Modal>
               </div>
             </FormItem>
         </Col>
       </Row>
       <Row>
-        <Col span="8">
-           <FormItem
-             label="投诉时间："
-             labelCol={{ span: 8 }}
-             wrapperCol={{ span: 16 }}>
-              <Input {...getFieldProps('complainTime')} format="yyyy-MM-dd"/>
-           </FormItem>
-        </Col>
+      <Col span="8">
+        <FormItem
+          label="投诉时间："
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}>
+            <DatePicker  defaultValue={this.state.complainTime} format="yyyy-MM-dd" disabled />
+        </FormItem>
+      </Col>
         <Col span="8">
           <FormItem
             label="投诉主题："
@@ -192,7 +193,7 @@ let NewComplain = React.createClass({
           </FormItem>
         </Col>
       </Row>
-      <FormItem className="buttonGroup" wrapperCol={{ span: 4, offset: 10 }} style={{ marginTop: 0 }}>
+      <FormItem className="buttonGroup" wrapperCol={{ span: 4, offset: 10 }} style={{ marginTop: 0,display:this.props.detail?'none':'block'}}>
           <Button type="primary" htmlType="submit">保存</Button>
       </FormItem>
    </Form>
@@ -208,9 +209,10 @@ NewComplain = Form.create({
 })(NewComplain);
 function mapStateToProps(state){
   return {
-    todo:state.initReducer.todo,
-    finished:state.initReducer.finished,
-    current:state.initReducer.current
+    todo:state.complainReducer.todo,
+    eventTodo:state.initReducer.todo,
+    finished:state.complainReducer.finished,
+    current:state.complainReducer.current
   }
 };
 let NewComplainContainer = connect(mapStateToProps)(NewComplain);

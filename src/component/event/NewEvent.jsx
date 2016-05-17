@@ -253,7 +253,6 @@ let NewEvent = React.createClass({
             wrapperCol={{ span: 16 }}>
               <DatePicker {...getFieldProps('endTime')} format="yyyy-MM-dd"/>
           </FormItem>
-
         </Col>
       </Row>
       <Row>
