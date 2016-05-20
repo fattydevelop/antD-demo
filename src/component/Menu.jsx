@@ -56,7 +56,7 @@ const Sider = React.createClass({
             <Menu.Item key="complainList">投诉列表</Menu.Item>
           </SubMenu>
           <SubMenu key="sub4" title={<span><Icon type="bar-chart" /><span>统计分析管理</span></span>}>
-            <Menu.Item key="9">事件类型统计</Menu.Item>
+            <Menu.Item key="eventStatistic">事件类型统计</Menu.Item>
             <Menu.Item key="10">事件进度统计</Menu.Item>
             <Menu.Item key="11">人员统计</Menu.Item>
           </SubMenu>

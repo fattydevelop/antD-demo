@@ -10,6 +10,7 @@ import Home from './Home.jsx';
 import {NewComplainContainer} from './complain/newComplain.jsx';
 import ComplainList from './complain/complainList.jsx';
 import DetailComplain from './complain/detailComplain.jsx';
+import EventStatistic from './statistic/EventStatistic.jsx';
 import './App.less';
 import {connect} from 'react-redux';
 import {initEvent} from './redux/actions/init.js';
@@ -53,6 +54,7 @@ const App = React.createClass({
                 <Route path="newComplain" component={NewComplainContainer}></Route>
                 <Route path="complainList" component={ComplainList}></Route>
                 <Route path="complainList/:id" component={DetailComplain}></Route>
+                <Route path="eventStatistic" component={EventStatistic}></Route>
                 <Route path="home" component={Home}></Route>
               </Route>
               </Router>
