@@ -162,8 +162,9 @@ let NewEvent = React.createClass({
               wrapperCol={{ span: 12 }}>
               <Select id="bizArea" size="large" {...getFieldProps('bizArea', { initialValue: '网络' })} defaultValue="网络" style={{ width: 200 }}>
                 <Option value="网络">网络</Option>
-                <Option value="走保">走保</Option>
-                <Option value="鉴定">鉴定</Option>
+                <Option value="走保单">走保单</Option>
+                <Option value="鉴定单">鉴定单</Option>
+                <Option value="销售单">销售单</Option>
               </Select>
             </FormItem>
         </Col>

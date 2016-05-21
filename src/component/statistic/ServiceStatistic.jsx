@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Input, Select,Checkbox,Radio, Row, Col,Button, Collapse,DatePicker} from 'antd';
+import { Form, Input, Select,Checkbox,Radio, Row, Col,Button, Collapse,DatePicker,Message} from 'antd';
 import '../../common/main.less';
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import {initEvent,addEvent,currentEvent,dealEvent} from '../redux/actions/init.js';
 // var G2 = require('./g2.chart.js');
 var chart = {};
-let EventStatistic = React.createClass({
+let ServiceStatistic = React.createClass({
   getInitialState(){
     return {
       data:[],
@@ -20,43 +20,73 @@ let EventStatistic = React.createClass({
   },
   getStatistic(startTime,endTime){
     let eventList = this.props.todo.concat(this.props.finished);
-    let ask =0,need=0,question=0;
-    eventList.forEach((event)=>{
+    let serviceArr = [];
+    let resultService = [];
 
-      if(startTime==''||endTime==''){
-        if(event.type=='故障')
-          ++question;
-        else if(event.type=='咨询')
-          ++ask;
-        else
-          ++need;
+    eventList.forEach((event)=>{
+      if((startTime==''||endTime=='')||(event.startTime>=startTime&&event.endTime<=endTime)){
+        let serviceName = event.serviceName;
+        let statisfy = event.statisfy>=3?1:0;
+        let num = 1;
+        let order = 0;
+        if(event.order>='P3')
+          order=1;
+        serviceArr.push({
+          serviceName:serviceName,
+          statisfy:statisfy,
+          num:num,
+          order:order
+        })
       };
       if(startTime>endTime)
         return false;
-      if(event.startTime>=startTime&&event.endTime<=endTime){
-          if(event.type=='故障')
-            ++question;
-          else if(event.type=='咨询')
-            ++ask;
-          else {
-            ++need;
-          }
-        }
     });
-    console.log(question,ask,need);
+    serviceArr.forEach((service)=>{
+      let flag = false;
+      resultService.forEach((result)=>{
+        if(service.serviceName==result.serviceName){
+          flag = true;
+          ++result.num;
+          result.statisfy += service.statisfy;
+          result.order += service.order;
+        }
+      });
+      if(!flag)
+        resultService.push(service);
+    })
+    let charData = [];
+    resultService.forEach((result)=>{
+      let numObj = {
+        serviceName:result.serviceName,
+        type:'事件数量',
+        value:result.num
+      };
+      charData.push(numObj);
+      let statisfyObj = {
+        serviceName:result.serviceName,
+        type:'满意度达到满意',
+        value:result.statisfy
+      };
+      charData.push(statisfyObj);
+      let orderObj = {
+        serviceName:result.serviceName,
+        type:'紧急度P3以上',
+        value:result.order
+      }
+      charData.push(orderObj);
+    })
     this.setState({
-      data:[
-        {genre:'故障',num:question},
-        {genre:'咨询',num:ask},
-        {genre:'需求',num:need}
-      ]
+      data:charData
     })
   },
   componentWillMount(){
     this.getStatistic(this.state.startTime,this.state.endTime);
   },
   componentDidUpdate(){
-    chart.changeData(this.state.data);
+    if(this.state.data.length==0)
+      Message.error('该时间范围内无统计数据');
+    else
+      chart.changeData(this.state.data);
   },
   startTimeChange(e){
     this.setState({
@@ -71,21 +101,21 @@ let EventStatistic = React.createClass({
     this.getStatistic(this.state.startTime,e.toISOString().slice(0,10));
   },
   componentDidMount(){
+    var Stat = G2.Stat;
     chart = new G2.Chart({
-        id: 'eventChart', // 指定图表容器 ID
+        id: 'fromChart', // 指定图表容器 ID
         width : 800, // 指定图表宽度
-        height : 400 // 指定图表高度
+        height : 400, // 指定图表高度
       });
-    chart.source(this.state.data, {
-        genre: {
-          alias: '事件类型' // 列定义，定义该属性显示的别名
-        },
-        num: {
-          alias: '发生次数'
-        }
-      });
+      chart.legend({
+        position: 'bottom'
+      })
+    chart.source(this.state.data);
+      chart.col('serviceName',{alias:'客服'});
+      chart.col('type',{alias: '统计类型'});
+      chart.col('value',{alias: '数量'});
       // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
-      chart.interval().position('genre*num').color('genre')
+      chart.intervalDodge().position(Stat.summary.mean('serviceName*value')).color('type');
       // Step 4: 渲染图表
       chart.render();
   },
@@ -93,7 +123,7 @@ let EventStatistic = React.createClass({
   render(){
     const { getFieldProps } = this.props.form;
     return(
-      <div className="eventStatistic">
+      <div className="fromStatistic">
         <div id="searchBar">
           <Form horizontal className="NewEvent" onSubmit={this.handleSubmit}>
           <Row>
@@ -116,18 +146,13 @@ let EventStatistic = React.createClass({
           </Row>
           </Form>
         </div>
-        <div id="eventChart"></div>
+        <div id="fromChart"></div>
       </div>
     );
   }
 });
-EventStatistic = Form.create({
-  // mapPropsToFields(props){
-  //   return {
-  //     current: props.current,
-  //   }
-  // }
-})(EventStatistic);
+ServiceStatistic = Form.create({
+})(ServiceStatistic);
 function mapStateToProps(state){
   return {
     current:state.initReducer.current,
@@ -135,4 +160,4 @@ function mapStateToProps(state){
     finished:state.initReducer.finished
   }
 };
-export default connect(mapStateToProps)(EventStatistic);
+export default connect(mapStateToProps)(ServiceStatistic);

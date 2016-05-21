@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import {initEvent,addEvent,currentEvent,dealEvent} from '../redux/actions/init.js';
 // var G2 = require('./g2.chart.js');
 var chart = {};
-let EventStatistic = React.createClass({
+let FromStatistic = React.createClass({
   getInitialState(){
     return {
       data:[],
@@ -20,35 +20,42 @@ let EventStatistic = React.createClass({
   },
   getStatistic(startTime,endTime){
     let eventList = this.props.todo.concat(this.props.finished);
-    let ask =0,need=0,question=0;
+    let buy =0,traffic=0,sales=0,service=0,other=0;
     eventList.forEach((event)=>{
-
       if(startTime==''||endTime==''){
-        if(event.type=='故障')
-          ++question;
-        else if(event.type=='咨询')
-          ++ask;
+        if(event.bizArea=='走保单'||event.bizArea=='鉴定单')
+          ++service;
+        else if(event.bizArea=='配件单')
+          ++buy;
+        else if(event.bizArea=='在途单')
+          ++traffic;
+        else if(event.bizArea=='销售单')
+          ++sales;
         else
-          ++need;
+          ++other;
       };
       if(startTime>endTime)
         return false;
       if(event.startTime>=startTime&&event.endTime<=endTime){
-          if(event.type=='故障')
-            ++question;
-          else if(event.type=='咨询')
-            ++ask;
-          else {
-            ++need;
-          }
+        if(event.bizArea=='走保单'||event.bizArea=='鉴定单')
+          ++service;
+        else if(event.bizArea=='配件单')
+          ++buy;
+        else if(event.bizArea=='在途单')
+          ++traffic;
+        else if(event.bizArea=='销售单')
+          ++sales;
+        else
+          ++other;
         }
     });
-    console.log(question,ask,need);
     this.setState({
       data:[
-        {genre:'故障',num:question},
-        {genre:'咨询',num:ask},
-        {genre:'需求',num:need}
+        {genre:'采购系统',num:buy},
+        {genre:'物流系统',num:traffic},
+        {genre:'销售系统',num:sales},
+        {genre:'服务系统',num:service},
+        {genre:'其他',num:other}
       ]
     })
   },
@@ -72,13 +79,18 @@ let EventStatistic = React.createClass({
   },
   componentDidMount(){
     chart = new G2.Chart({
-        id: 'eventChart', // 指定图表容器 ID
+        id: 'fromChart', // 指定图表容器 ID
         width : 800, // 指定图表宽度
         height : 400 // 指定图表高度
       });
+    chart.legend({
+      width: 30, // 宽度
+      height: 80, // 长度
+      title: null
+    });
     chart.source(this.state.data, {
         genre: {
-          alias: '事件类型' // 列定义，定义该属性显示的别名
+          alias: 'SaaS系统事件来源' // 列定义，定义该属性显示的别名
         },
         num: {
           alias: '发生次数'
@@ -93,7 +105,7 @@ let EventStatistic = React.createClass({
   render(){
     const { getFieldProps } = this.props.form;
     return(
-      <div className="eventStatistic">
+      <div className="fromStatistic">
         <div id="searchBar">
           <Form horizontal className="NewEvent" onSubmit={this.handleSubmit}>
           <Row>
@@ -116,18 +128,13 @@ let EventStatistic = React.createClass({
           </Row>
           </Form>
         </div>
-        <div id="eventChart"></div>
+        <div id="fromChart"></div>
       </div>
     );
   }
 });
-EventStatistic = Form.create({
-  // mapPropsToFields(props){
-  //   return {
-  //     current: props.current,
-  //   }
-  // }
-})(EventStatistic);
+FromStatistic = Form.create({
+})(FromStatistic);
 function mapStateToProps(state){
   return {
     current:state.initReducer.current,
@@ -135,4 +142,4 @@ function mapStateToProps(state){
     finished:state.initReducer.finished
   }
 };
-export default connect(mapStateToProps)(EventStatistic);
+export default connect(mapStateToProps)(FromStatistic);

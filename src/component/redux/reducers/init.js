@@ -10,15 +10,15 @@ const initState = {
       tel:'18608010500',
       serviceName:'fafa',
       servceTel:'ss',
-      bizArea:'网络',
-      area: '走保单',
+      bizArea:'销售单',
       type: '故障',
       solution:'buzhidao',
       order:'P6',
       status:'todo',
       statusText:'处理中',
       startTime:'2016-05-05',
-      endTime:'2016-05-06'
+      endTime:'2016-05-06',
+      statisfy:3
     }, {
       eventId: '201605050002',
       describe:'走保打不开',
@@ -27,15 +27,15 @@ const initState = {
       tel:'18608010500',
       serviceName:'fafa',
       servceTel:'ss',
-      bizArea:'网络',
-      area: '走保单',
+      bizArea:'鉴定单',
       type: '故障',
       solution:'buzhidao',
       order:'P6',
       status:'todo',
       statusText:'处理中',
       startTime:'2016-05-05',
-      endTime:'2016-05-06'
+      endTime:'2016-05-06',
+      statisfy:3
     }, {
       eventId: '201605050003',
       describe:'走保打不开',
@@ -44,15 +44,33 @@ const initState = {
       tel:'18608010500',
       serviceName:'fafa',
       servceTel:'ss',
-      bizArea:'网络',
-      area: '走保单',
+      bizArea:'鉴定单',
       type: '故障',
       solution:'buzhidao',
       order:'P6',
       status:'todo',
       statusText:'处理中',
       startTime:'2016-05-05',
-      endTime:'2016-05-06'
+      endTime:'2016-05-06',
+      statisfy:3
+    },
+    {
+      eventId: '201605050004',
+      describe:'销售单故障',
+      username:'yyf',
+      company:'gl',
+      tel:'18608010500',
+      serviceName:'yyf',
+      servceTel:'ss',
+      bizArea:'网络',
+      type: '故障',
+      solution:'buzhidao',
+      order:'P6',
+      status:'todo',
+      statusText:'处理中',
+      startTime:'2016-05-15',
+      endTime:'2016-05-16',
+      statisfy:2
     }
   ],
   finished:[
